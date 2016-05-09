@@ -17,17 +17,47 @@ public interface ArithmeticVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGoal(ArithmeticParser.GoalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ArithmeticParser#expr}.
+	 * Visit a parse tree produced by the {@code minusrule}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr(ArithmeticParser.ExprContext ctx);
+	T visitMinusrule(ArithmeticParser.MinusruleContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ArithmeticParser#term}.
+	 * Visit a parse tree produced by the {@code plusrule}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTerm(ArithmeticParser.TermContext ctx);
+	T visitPlusrule(ArithmeticParser.PlusruleContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code singleruleexpr}
+	 * labeled alternative in {@link ArithmeticParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSingleruleexpr(ArithmeticParser.SingleruleexprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code dividerule}
+	 * labeled alternative in {@link ArithmeticParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDividerule(ArithmeticParser.DivideruleContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code singleruleterm}
+	 * labeled alternative in {@link ArithmeticParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSingleruleterm(ArithmeticParser.SingleruletermContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code multiplyrule}
+	 * labeled alternative in {@link ArithmeticParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiplyrule(ArithmeticParser.MultiplyruleContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ArithmeticParser#exponent}.
 	 * @param ctx the parse tree

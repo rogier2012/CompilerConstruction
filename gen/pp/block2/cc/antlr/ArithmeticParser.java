@@ -124,27 +124,76 @@ public class ArithmeticParser extends Parser {
 	}
 
 	public static class ExprContext extends ParserRuleContext {
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
-		}
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
-		}
 		public ExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expr; }
+	 
+		public ExprContext() { }
+		public void copyFrom(ExprContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class MinusruleContext extends ExprContext {
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public MinusruleContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterExpr(this);
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterMinusrule(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitExpr(this);
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitMinusrule(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitExpr(this);
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitMinusrule(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class PlusruleContext extends ExprContext {
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public PlusruleContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterPlusrule(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitPlusrule(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitPlusrule(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class SingleruleexprContext extends ExprContext {
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public SingleruleexprContext(ExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterSingleruleexpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitSingleruleexpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitSingleruleexpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -165,6 +214,10 @@ public class ArithmeticParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
+			_localctx = new SingleruleexprContext(_localctx);
+			_ctx = _localctx;
+			_prevctx = _localctx;
+
 			setState(13);
 			term(0);
 			}
@@ -181,7 +234,7 @@ public class ArithmeticParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 					case 1:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new PlusruleContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(15);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
@@ -193,7 +246,7 @@ public class ArithmeticParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new ExprContext(_parentctx, _parentState);
+						_localctx = new MinusruleContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(18);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
@@ -224,27 +277,76 @@ public class ArithmeticParser extends Parser {
 	}
 
 	public static class TermContext extends ParserRuleContext {
-		public ExponentContext exponent() {
-			return getRuleContext(ExponentContext.class,0);
-		}
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
-		}
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_term; }
+	 
+		public TermContext() { }
+		public void copyFrom(TermContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class DivideruleContext extends TermContext {
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public ExponentContext exponent() {
+			return getRuleContext(ExponentContext.class,0);
+		}
+		public DivideruleContext(TermContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterTerm(this);
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterDividerule(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitTerm(this);
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitDividerule(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitTerm(this);
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitDividerule(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class SingleruletermContext extends TermContext {
+		public ExponentContext exponent() {
+			return getRuleContext(ExponentContext.class,0);
+		}
+		public SingleruletermContext(TermContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterSingleruleterm(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitSingleruleterm(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitSingleruleterm(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class MultiplyruleContext extends TermContext {
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public ExponentContext exponent() {
+			return getRuleContext(ExponentContext.class,0);
+		}
+		public MultiplyruleContext(TermContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterMultiplyrule(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitMultiplyrule(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitMultiplyrule(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -265,6 +367,10 @@ public class ArithmeticParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
+			_localctx = new SingleruletermContext(_localctx);
+			_ctx = _localctx;
+			_prevctx = _localctx;
+
 			setState(27);
 			exponent();
 			}
@@ -281,7 +387,7 @@ public class ArithmeticParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 					case 1:
 						{
-						_localctx = new TermContext(_parentctx, _parentState);
+						_localctx = new MultiplyruleContext(new TermContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_term);
 						setState(29);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
@@ -293,7 +399,7 @@ public class ArithmeticParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new TermContext(_parentctx, _parentState);
+						_localctx = new DivideruleContext(new TermContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_term);
 						setState(32);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");

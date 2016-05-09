@@ -38,37 +38,39 @@ public class MyCalculator extends ArithmeticBaseListener{
         expressionResult = newTree.get(ctx.getChild(0));
     }
 
+
     @Override
-    public void exitExpr(ArithmeticParser.ExprContext ctx) {
-        if (ctx.getChildCount() == 1){
-            setBigInteger(ctx,newTree.get(ctx.getChild(0)));
-        } else {
-            if (((CommonToken)ctx.getChild(1).getPayload()).getType() == ArithmeticLexer.T__1){
-                BigInteger result = newTree.get(ctx.getChild(0)).subtract(newTree.get(ctx.getChild(2)));
-                setBigInteger(ctx, result);
-            } else if (((CommonToken)ctx.getChild(1).getPayload()).getType() == ArithmeticLexer.T__0){
-                BigInteger result = newTree.get(ctx.getChild(0)).add(newTree.get(ctx.getChild(2)));
-                setBigInteger(ctx, result);
-            }
-        }
+    public void exitMinusrule(ArithmeticParser.MinusruleContext ctx) {
+        BigInteger result = newTree.get(ctx.getChild(0)).subtract(newTree.get(ctx.getChild(2)));
+        setBigInteger(ctx, result);
     }
 
+    @Override
+    public void exitPlusrule(ArithmeticParser.PlusruleContext ctx) {
+        BigInteger result = newTree.get(ctx.getChild(0)).add(newTree.get(ctx.getChild(2)));
+        setBigInteger(ctx, result);
+    }
 
     @Override
-    public void exitTerm(ArithmeticParser.TermContext ctx) {
-        if (ctx.getChildCount() == 1){
-            setBigInteger(ctx,newTree.get(ctx.getChild(0)));
-        } else {
-            if (((CommonToken)ctx.getChild(1).getPayload()).getType() == ArithmeticLexer.T__3){
-                BigInteger result = newTree.get(ctx.getChild(0)).divide(newTree.get(ctx.getChild(2)));
-                setBigInteger(ctx, result);
-            } else if (((CommonToken)ctx.getChild(1).getPayload()).getType() == ArithmeticLexer.T__2){
-                BigInteger result = newTree.get(ctx.getChild(0)).multiply(newTree.get(ctx.getChild(2)));
-                setBigInteger(ctx, result);
-            }
+    public void exitSingleruleexpr(ArithmeticParser.SingleruleexprContext ctx) {
+        setBigInteger(ctx,newTree.get(ctx.getChild(0)));
+    }
 
+    @Override
+    public void exitDividerule(ArithmeticParser.DivideruleContext ctx) {
+        BigInteger result = newTree.get(ctx.getChild(0)).divide(newTree.get(ctx.getChild(2)));
+        setBigInteger(ctx, result);
+    }
 
-        }
+    @Override
+    public void exitSingleruleterm(ArithmeticParser.SingleruletermContext ctx) {
+        setBigInteger(ctx,newTree.get(ctx.getChild(0)));
+    }
+
+    @Override
+    public void exitMultiplyrule(ArithmeticParser.MultiplyruleContext ctx) {
+        BigInteger result = newTree.get(ctx.getChild(0)).multiply(newTree.get(ctx.getChild(2)));
+        setBigInteger(ctx, result);
     }
 
 

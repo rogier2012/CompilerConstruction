@@ -28,25 +28,73 @@ public class ArithmeticBaseListener implements ArithmeticListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr(ArithmeticParser.ExprContext ctx) { }
+	@Override public void enterMinusrule(ArithmeticParser.MinusruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr(ArithmeticParser.ExprContext ctx) { }
+	@Override public void exitMinusrule(ArithmeticParser.MinusruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTerm(ArithmeticParser.TermContext ctx) { }
+	@Override public void enterPlusrule(ArithmeticParser.PlusruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTerm(ArithmeticParser.TermContext ctx) { }
+	@Override public void exitPlusrule(ArithmeticParser.PlusruleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSingleruleexpr(ArithmeticParser.SingleruleexprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSingleruleexpr(ArithmeticParser.SingleruleexprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDividerule(ArithmeticParser.DivideruleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDividerule(ArithmeticParser.DivideruleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSingleruleterm(ArithmeticParser.SingleruletermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSingleruleterm(ArithmeticParser.SingleruletermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMultiplyrule(ArithmeticParser.MultiplyruleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMultiplyrule(ArithmeticParser.MultiplyruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
