@@ -19,6 +19,11 @@ public class TypeTest {
     @Test
     public void test() {
         test(Type.STR, "\"hallo\"^2");
+        test(Type.BOOL, "true + true");
+        test(Type.ERR, "3 + true");
+        test(Type.STR, "3 + \"hoi\"");
+        test(Type.NUM, "3 + 2");
+        test(Type.ERR, "true + 3");
 
     }
 
