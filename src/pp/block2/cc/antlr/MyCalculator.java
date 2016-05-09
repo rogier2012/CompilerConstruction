@@ -73,15 +73,15 @@ public class MyCalculator extends ArithmeticBaseListener{
         setBigInteger(ctx, result);
     }
 
+    @Override
+    public void exitPowerrule(ArithmeticParser.PowerruleContext ctx) {
+        BigInteger result = newTree.get(ctx.getChild(0)).pow(newTree.get(ctx.getChild(2)).intValue());
+        setBigInteger(ctx, result);
+    }
 
     @Override
-    public void exitExponent(ArithmeticParser.ExponentContext ctx) {
-        if (ctx.getChildCount() == 1){
-            setBigInteger(ctx,newTree.get(ctx.getChild(0)));
-        } else {
-            BigInteger result = newTree.get(ctx.getChild(0)).pow(newTree.get(ctx.getChild(2)).intValue());
-            setBigInteger(ctx, result);
-        }
+    public void exitSingleruleexponent(ArithmeticParser.SingleruleexponentContext ctx) {
+        setBigInteger(ctx,newTree.get(ctx.getChild(0)));
     }
 
     @Override

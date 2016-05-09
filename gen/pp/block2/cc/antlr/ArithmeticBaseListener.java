@@ -100,13 +100,25 @@ public class ArithmeticBaseListener implements ArithmeticListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExponent(ArithmeticParser.ExponentContext ctx) { }
+	@Override public void enterPowerrule(ArithmeticParser.PowerruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExponent(ArithmeticParser.ExponentContext ctx) { }
+	@Override public void exitPowerrule(ArithmeticParser.PowerruleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSingleruleexponent(ArithmeticParser.SingleruleexponentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSingleruleexponent(ArithmeticParser.SingleruleexponentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

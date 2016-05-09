@@ -12,8 +12,9 @@ term : term '*' exponent # multiplyrule
      | exponent # singleruleterm
      ;
 
-exponent : <assoc=right > factor '^' exponent
-     | factor;
+exponent : <assoc=right > factor '^' exponent # powerrule
+     | factor # singleruleexponent
+     ;
 
 
 factor : '(' expr ')'

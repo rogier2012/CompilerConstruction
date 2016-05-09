@@ -90,15 +90,29 @@ public interface ArithmeticListener extends ParseTreeListener {
 	 */
 	void exitMultiplyrule(ArithmeticParser.MultiplyruleContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ArithmeticParser#exponent}.
+	 * Enter a parse tree produced by the {@code powerrule}
+	 * labeled alternative in {@link ArithmeticParser#exponent}.
 	 * @param ctx the parse tree
 	 */
-	void enterExponent(ArithmeticParser.ExponentContext ctx);
+	void enterPowerrule(ArithmeticParser.PowerruleContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ArithmeticParser#exponent}.
+	 * Exit a parse tree produced by the {@code powerrule}
+	 * labeled alternative in {@link ArithmeticParser#exponent}.
 	 * @param ctx the parse tree
 	 */
-	void exitExponent(ArithmeticParser.ExponentContext ctx);
+	void exitPowerrule(ArithmeticParser.PowerruleContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code singleruleexponent}
+	 * labeled alternative in {@link ArithmeticParser#exponent}.
+	 * @param ctx the parse tree
+	 */
+	void enterSingleruleexponent(ArithmeticParser.SingleruleexponentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code singleruleexponent}
+	 * labeled alternative in {@link ArithmeticParser#exponent}.
+	 * @param ctx the parse tree
+	 */
+	void exitSingleruleexponent(ArithmeticParser.SingleruleexponentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ArithmeticParser#factor}.
 	 * @param ctx the parse tree

@@ -430,27 +430,54 @@ public class ArithmeticParser extends Parser {
 	}
 
 	public static class ExponentContext extends ParserRuleContext {
+		public ExponentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_exponent; }
+	 
+		public ExponentContext() { }
+		public void copyFrom(ExponentContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class SingleruleexponentContext extends ExponentContext {
+		public FactorContext factor() {
+			return getRuleContext(FactorContext.class,0);
+		}
+		public SingleruleexponentContext(ExponentContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterSingleruleexponent(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitSingleruleexponent(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitSingleruleexponent(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class PowerruleContext extends ExponentContext {
 		public FactorContext factor() {
 			return getRuleContext(FactorContext.class,0);
 		}
 		public ExponentContext exponent() {
 			return getRuleContext(ExponentContext.class,0);
 		}
-		public ExponentContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_exponent; }
+		public PowerruleContext(ExponentContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterExponent(this);
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).enterPowerrule(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitExponent(this);
+			if ( listener instanceof ArithmeticListener ) ((ArithmeticListener)listener).exitPowerrule(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitExponent(this);
+			if ( visitor instanceof ArithmeticVisitor ) return ((ArithmeticVisitor<? extends T>)visitor).visitPowerrule(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -462,6 +489,7 @@ public class ArithmeticParser extends Parser {
 			setState(45);
 			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
+				_localctx = new PowerruleContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(40);
@@ -473,6 +501,7 @@ public class ArithmeticParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new SingleruleexponentContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(44);

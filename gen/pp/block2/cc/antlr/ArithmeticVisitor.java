@@ -59,11 +59,19 @@ public interface ArithmeticVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMultiplyrule(ArithmeticParser.MultiplyruleContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ArithmeticParser#exponent}.
+	 * Visit a parse tree produced by the {@code powerrule}
+	 * labeled alternative in {@link ArithmeticParser#exponent}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExponent(ArithmeticParser.ExponentContext ctx);
+	T visitPowerrule(ArithmeticParser.PowerruleContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code singleruleexponent}
+	 * labeled alternative in {@link ArithmeticParser#exponent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSingleruleexponent(ArithmeticParser.SingleruleexponentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ArithmeticParser#factor}.
 	 * @param ctx the parse tree
