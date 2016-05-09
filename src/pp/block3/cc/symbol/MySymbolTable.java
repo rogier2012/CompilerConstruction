@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Rogier on 09-05-16 in Enschede.
  */
 public class MySymbolTable implements SymbolTable {
-    List<List<String>> scopes;
+    private List<List<String>> scopes;
 
     public MySymbolTable() {
         this.scopes = new ArrayList<>();
