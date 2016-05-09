@@ -18,7 +18,7 @@ import java.io.Reader;
 import static org.junit.Assert.*;
 
 /**
- * Created by Rogier on 09-05-16 in Enschede.
+ * Created by Rogier on 09-05-16 in Enschede
  */
 public class DeclUseTest {
     private DeclUse declUse = new DeclUse();
@@ -29,9 +29,8 @@ public class DeclUseTest {
 
         try {
 
-
-            test(0, new FileReader("src/pp/block3/cc/symbol/program.txt"));
-
+            test(0, new FileReader("src/pp/block3/cc/symbol/program1.txt"));
+            test(1, new FileReader("src/pp/block3/cc/symbol/program2.txt"));
 
 
 
