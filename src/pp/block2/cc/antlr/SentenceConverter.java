@@ -33,13 +33,8 @@ public class SentenceConverter //
 	@Override
 	public AST parse(Lexer lexer) throws ParseException {
         SentenceParser parser = new SentenceParser(new CommonTokenStream(lexer));
-//        parser.removeErrorListeners();
-        MyErrorListener error = new MyErrorListener();
-        parser.addErrorListener(error);
-
         errorcount =0;
         ParseTree tree = parser.sentence();
-        System.out.println(error.getErrors());
         newtree = new ParseTreeProperty<>();
         new ParseTreeWalker().walk(this, tree);
 		if (errorcount > 0){
