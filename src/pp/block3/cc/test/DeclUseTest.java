@@ -9,6 +9,7 @@ import pp.block3.cc.antlr.CalcParser;
 import pp.block3.cc.symbol.DeclUse;
 import pp.block3.cc.symbol.DeclUseLexer;
 import pp.block3.cc.symbol.DeclUseParser;
+import pp.block3.cc.tabular.MyErrorListener;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -60,6 +61,10 @@ public class DeclUseTest {
         Lexer lexer = new DeclUseLexer(chars);
         TokenStream tokens = new CommonTokenStream(lexer);
         DeclUseParser parser = new DeclUseParser(tokens);
+        parser.removeErrorListeners();
+        MyErrorListener error = new MyErrorListener();
+        parser.addErrorListener(error);
+        System.out.println(error.getErrors());
         return parser.program();
     }
 

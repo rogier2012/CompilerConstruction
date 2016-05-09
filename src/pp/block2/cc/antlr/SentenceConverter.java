@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.*;
 import pp.block2.cc.*;
 import pp.block2.cc.Parser;
 import pp.block2.cc.ll.Sentence;
+import pp.block3.cc.tabular.MyErrorListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,13 @@ public class SentenceConverter //
 	@Override
 	public AST parse(Lexer lexer) throws ParseException {
         SentenceParser parser = new SentenceParser(new CommonTokenStream(lexer));
-		errorcount =0;
+//        parser.removeErrorListeners();
+        MyErrorListener error = new MyErrorListener();
+        parser.addErrorListener(error);
+
+        errorcount =0;
         ParseTree tree = parser.sentence();
+        System.out.println(error.getErrors());
         newtree = new ParseTreeProperty<>();
         new ParseTreeWalker().walk(this, tree);
 		if (errorcount > 0){

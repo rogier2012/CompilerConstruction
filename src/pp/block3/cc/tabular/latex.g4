@@ -1,18 +1,16 @@
 grammar Latex;
 
-
-table : BEGINTABLE arguments '\n' (rows)* ENDTABLE '\n';
-arguments : LBRACK ('l'|'c'|'r')* RBRACK;
-rows :  entry ('&' entry)* '\\\\' '\n';
-entry : (~(KEYWORDS))+;
+table : BEGINTABLE arguments '\n'+ (row)* ENDTABLE '\n'+;
+arguments : LBRACK OPTIONS RBRACK;
+row :  (|ENTRY) ('&' (|ENTRY))* '\\\\' '\n'+;
 
 LBRACK : '{';
 RBRACK : '}';
-
+OPTIONS : ('l'|'c'|'r')+;
 BEGINTABLE : '\\begin{tabular}';
 ENDTABLE : '\\end{tabular}';
+ENTRY : ~('\\' | '\n' | '{' |'}' | '$' | '&' | '#' | 'ˆ' | '_' | '~'| '%')+;
+
 
 KEYWORDS: ('\\' | '{' |'}' | '$' | '&' | '#' | 'ˆ' | '_' | '~̃'| '%');
-COMMENT : ('%'  ~('\r'|'\n')* ('\r'|'\n')) -> skip;
-
-WS : [ \t]+ -> skip;
+COMMENT : ('%'  ~('\r'|'\n')* ('\r'|'\n')+) -> skip;
