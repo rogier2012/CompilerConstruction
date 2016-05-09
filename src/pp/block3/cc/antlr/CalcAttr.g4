@@ -13,9 +13,12 @@ expr returns [ int val ]
        { $val = $e0.val * $e1.val; }
      | e0=expr PLUS e1=expr
        { $val = $e0.val + $e1.val; }
+     | MINUS e0=expr
+       { $val = - $e0.val; }
+     | e0=expr MINUS e1=expr
+       { $val = $e0.val - $e1.val; }
      | LPAR e=expr RPAR
        { $val = $e.val; }
-     | { System.out.println("Evaluating NUMBER"); }
-       NUMBER
+     | NUMBER
        { $val = getValue($NUMBER.text); }
      ;
