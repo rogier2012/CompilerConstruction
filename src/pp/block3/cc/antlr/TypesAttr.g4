@@ -4,16 +4,6 @@ import TypesVocab;
 
 @members {
 
-    private Type getType(String text){
-       if (text.equals("true") || text.equals("false")){
-            return Type.BOOL;
-       } else if (text.matches("-?\\d+(\\.\\d+)?")){
-            return Type.NUM;
-       } else {
-            return Type.STR;
-       }
-    }
-
     private Type getHat(Type type1,Type type2){
         if (type1 == Type.NUM && type2 == Type.NUM){
             return Type.NUM;
@@ -59,9 +49,9 @@ type  returns [ Type val ]
     | LPAR t0 = type RPAR
       {$val = $t0.val;}
     | NUMBER
-      {$val = getType($NUMBER.text);}
+      {$val = Type.NUM;}
     | BOOLEAN
-      {$val = getType($BOOLEAN.text);}
+      {$val = Type.BOOL;}
     | STRING
-      {$val = getType($STRING.text);}
+      {$val = Type.STR;}
     ;
