@@ -2,7 +2,9 @@ grammar Latex;
 
 table : BEGINTABLE arguments '\n'+ (row)* ENDTABLE '\n'+;
 arguments : LBRACK OPTIONS RBRACK;
-row :  (|ENTRY) ('&' (|ENTRY))* '\\\\' '\n'+;
+row :  rowentry ('&' rowentry)* '\\\\' '\n'+;
+rowentry : (|ENTRY);
+
 
 LBRACK : '{';
 RBRACK : '}';

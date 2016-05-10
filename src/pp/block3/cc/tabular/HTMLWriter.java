@@ -62,8 +62,8 @@ public class HTMLWriter extends LatexBaseListener {
     @Override
     public void exitRow(LatexParser.RowContext ctx) {
         String result = val(ctx);
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            result = result + val(ctx.rowentry(i));
+        for (LatexParser.RowentryContext entry : ctx.rowentry()) {
+            result = result + val(entry);
         }
         result = result + "</tr>\n";
         set(ctx,result);
