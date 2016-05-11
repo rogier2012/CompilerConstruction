@@ -71,8 +71,11 @@ public class HTMLWriter extends LatexBaseListener {
 
     @Override
     public void exitRowentry(LatexParser.RowentryContext ctx) {
-        String result = "<td>"+ctx.ENTRY().getText() +"</td>\n";
-        set(ctx,result);
+        if (ctx.ENTRY() != null){
+            String result = "<td>"+ctx.ENTRY().getText() +"</td>\n";
+            set(ctx,result);
+        }
+
     }
 
     private void set(ParseTree node, String text){
@@ -86,7 +89,7 @@ public class HTMLWriter extends LatexBaseListener {
     public static void main(String[] args) {
         FileReader file = null;
         try {
-            file = new FileReader("src/pp/block3/cc/tabular/tabular-1.tex");
+            file = new FileReader("src/pp/block3/cc/tabular/tabular-3.tex");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
