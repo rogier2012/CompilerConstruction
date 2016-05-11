@@ -74,6 +74,9 @@ public class HTMLWriter extends LatexBaseListener {
         if (ctx.ENTRY() != null){
             String result = "<td>"+ctx.ENTRY().getText() +"</td>\n";
             set(ctx,result);
+        } else {
+            String result = "<td>" +"</td>\n";
+            set(ctx,result);
         }
 
     }

@@ -1,8 +1,8 @@
 grammar Latex;
 
-table : BEGINTABLE arguments '\n'+ (row)* ENDTABLE '\n'+;
+table : BEGINTABLE arguments NEWLINE (row)* ENDTABLE NEWLINE;
 arguments : LBRACK OPTIONS RBRACK;
-row :  rowentry ('&' rowentry)* '\\\\' '\n'+;
+row :  rowentry ('&' rowentry)* '\\\\' NEWLINE;
 rowentry : (|ENTRY);
 
 
@@ -15,4 +15,5 @@ ENTRY : ~('\\' | '\n' | '{' |'}' | '$' | '&' | '#' | 'ˆ' | '_' | '~'| '%')+;
 
 
 KEYWORDS: ('\\' | '{' |'}' | '$' | '&' | '#' | 'ˆ' | '_' | '~̃'| '%');
+NEWLINE : ('\r'|'\n')+;
 COMMENT : ('%'  ~('\r'|'\n')* ('\r'|'\n')+) -> skip;
