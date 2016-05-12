@@ -75,7 +75,7 @@ public class HTMLWriter extends LatexBaseListener {
             String result = "<td>"+ctx.ENTRY().getText() +"</td>\n";
             set(ctx,result);
         } else {
-            String result = "<td>" +"</td>\n";
+            String result = "<td>" + "</td>\n";
             set(ctx,result);
         }
 
@@ -92,7 +92,7 @@ public class HTMLWriter extends LatexBaseListener {
     public static void main(String[] args) {
         FileReader file = null;
         try {
-            file = new FileReader("src/pp/block3/cc/tabular/tabular-3.tex");
+            file = new FileReader("src/pp/block3/cc/tabular/tabular-1.tex");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
