@@ -10,6 +10,10 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.Pair;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import pp.block4.cc.ErrorListener;
 import pp.block4.cc.cfg.FragmentParser.BreakStatContext;
 import pp.block4.cc.cfg.FragmentParser.ContStatContext;
@@ -19,6 +23,8 @@ import pp.block4.cc.cfg.FragmentParser.ProgramContext;
 public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** The CFG being built. */
 	private Graph graph;
+    private ParseTreeProperty<Pair<ParseTree,ParseTree>> pairParseTreeProperty;
+    private ParseTreeProperty<Node> nodeTree;
 
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
@@ -51,8 +57,10 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** Builds the CFG for a program given as an ANTLR parse tree. */
 	public Graph build(ProgramContext tree) {
 		this.graph = new Graph();
-		// TODO Fill in
-		throw new UnsupportedOperationException("Fill in");
+        pairParseTreeProperty = new ParseTreeProperty<>();
+        nodeTree = new ParseTreeProperty<>();
+        new ParseTreeWalker().walk(this,tree);
+		return graph;
 	}
 
 	@Override
@@ -65,13 +73,65 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 		throw new IllegalArgumentException("Continue not supported");
 	}
 
-	/** Adds a node to he CGF, based on a given parse tree node.
+    @Override
+    public void enterProgram(ProgramContext ctx) {
+        super.enterProgram(ctx);
+    }
+
+
+    @Override
+    public void enterDecl(FragmentParser.DeclContext ctx) {
+        Node node = addNode(ctx,"Declare");
+        nodeTree.put(ctx,node);
+        Node incoming = nodeTree.get(pairParseTreeProperty.get(ctx).a);
+
+        incoming.addEdge(node);
+    }
+
+    @Override
+    public void enterAssignStat(FragmentParser.AssignStatContext ctx) {
+        Node node = addNode(ctx,"Assign");
+    }
+
+    @Override
+    public void enterIfStat(FragmentParser.IfStatContext ctx) {
+        Node cond = addNode(ctx,"Cond");
+        Node after = addNode(ctx, "After");
+
+    }
+
+    @Override
+    public void enterWhileStat(FragmentParser.WhileStatContext ctx) {
+        Node cond = addNode(ctx,"Cond");
+    }
+
+    @Override
+    public void enterBlockStat(FragmentParser.BlockStatContext ctx) {
+        int childCount = ctx.stat().size();
+        for (int i = 0; i < (childCount -1); i++) {
+
+        }
+    }
+
+    @Override
+    public void enterPrintStat(FragmentParser.PrintStatContext ctx) {
+        Node node = addNode(ctx,"Print");
+
+    }
+
+    /** Adds a node to he CGF, based on a given parse tree node.
 	 * Gives the CFG node a meaningful ID, consisting of line number and 
 	 * a further indicator.
 	 */
 	private Node addNode(ParserRuleContext node, String text) {
 		return this.graph.addNode(node.getStart().getLine() + ": " + text);
 	}
+
+
+    private void setPair(ParseTree toBeconnected, ParseTree connection){
+        Pair<ParseTree,ParseTree> pair = new Pair<>(toBeconnected,connection);
+        pairParseTreeProperty.put(connection,pair);
+    }
 
 	/** Main method to build and print the CFG of a simple Java program. */
 	public static void main(String[] args) {
