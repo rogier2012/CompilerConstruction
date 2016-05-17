@@ -3,6 +3,9 @@ package pp.block4.cc.cfg;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -14,6 +17,7 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import pp.block2.cc.NonTerm;
 import pp.block4.cc.ErrorListener;
 import pp.block4.cc.cfg.FragmentParser.BreakStatContext;
 import pp.block4.cc.cfg.FragmentParser.ContStatContext;
@@ -23,8 +27,8 @@ import pp.block4.cc.cfg.FragmentParser.ProgramContext;
 public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** The CFG being built. */
 	private Graph graph;
-    private ParseTreeProperty<Pair<ParseTree,ParseTree>> pairParseTreeProperty;
-    private ParseTreeProperty<Node> nodeTree;
+    private ParseTreeProperty<ParseTree> pairParseTreeProperty;
+    private ParseTreeProperty<List<Node>> nodeTree;
 
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
@@ -75,48 +79,110 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 
     @Override
     public void enterProgram(ProgramContext ctx) {
-        super.enterProgram(ctx);
+        int childCount = ctx.stat().size();
+        Node program = addNode(ctx,"Program");
+        if (childCount >= 1){
+            setPair(ctx.stat(0),ctx);
+        }
+
+        for (int i = 1; i < (childCount); i++) {
+            setPair(ctx.stat(i),ctx.stat(i-1));
+        }
+        setNodeTree(ctx,program);
     }
 
 
     @Override
     public void enterDecl(FragmentParser.DeclContext ctx) {
         Node node = addNode(ctx,"Declare");
-        nodeTree.put(ctx,node);
-        Node incoming = nodeTree.get(pairParseTreeProperty.get(ctx).a);
 
-        incoming.addEdge(node);
+        Node previous = previous(ctx);
+        if (ctx.getParent().getParent() instanceof FragmentParser.WhileStatContext){
+            node.addEdge(previous);
+        } else if (ctx.getParent().getParent() instanceof FragmentParser.IfStatContext){
+            previous.addEdge(node);
+            node.addEdge(next(ctx));
+        } else {
+            previous.addEdge(node);
+        }
+
+        setNodeTree(ctx,node);
     }
 
     @Override
     public void enterAssignStat(FragmentParser.AssignStatContext ctx) {
         Node node = addNode(ctx,"Assign");
+        Node previous = previous(ctx);
+        if (ctx.getParent().getParent() instanceof FragmentParser.WhileStatContext){
+            node.addEdge(previous);
+            setNodeTree(ctx,node);
+        } else if (ctx.getParent().getParent() instanceof FragmentParser.IfStatContext){
+            previous.addEdge(node);
+            node.addEdge(next(ctx));
+            setNodeTree(ctx,next(ctx));
+        } else {
+            previous.addEdge(node);
+            setNodeTree(ctx,node);
+        }
+
     }
 
     @Override
     public void enterIfStat(FragmentParser.IfStatContext ctx) {
+        Node previous = previous(ctx);
+
         Node cond = addNode(ctx,"Cond");
         Node after = addNode(ctx, "After");
+
+        previous.addEdge(cond);
+        cond.addEdge(after);
+
+        setNodeTree(ctx,cond,after);
+        setPair(ctx.stat(0),ctx);
 
     }
 
     @Override
     public void enterWhileStat(FragmentParser.WhileStatContext ctx) {
+        Node previous = previous(ctx);
         Node cond = addNode(ctx,"Cond");
+        previous.addEdge(cond);
+
+        setNodeTree(ctx,cond);
+        setPair(ctx.stat(),ctx);
     }
 
     @Override
     public void enterBlockStat(FragmentParser.BlockStatContext ctx) {
         int childCount = ctx.stat().size();
-        for (int i = 0; i < (childCount -1); i++) {
 
+        if (childCount >= 1){
+            setPair(ctx.stat(0),ctx.getParent());
+            setPair(ctx.stat(childCount-1),ctx.getParent());
         }
+
+        for (int i = 1; i < (childCount-1); i++) {
+            setPair(ctx.stat(i),ctx.stat(i-1));
+        }
+
+
     }
 
     @Override
     public void enterPrintStat(FragmentParser.PrintStatContext ctx) {
         Node node = addNode(ctx,"Print");
+        Node previous = previous(ctx);
+        if (ctx.getParent().getParent() instanceof FragmentParser.WhileStatContext){
+            previous.addEdge(node);
+            node.addEdge(previous);
+        } else if (ctx.getParent().getParent() instanceof FragmentParser.IfStatContext){
+            previous.addEdge(node);
+            node.addEdge(next(ctx));
+        } else {
+            previous.addEdge(node);
+        }
 
+        setNodeTree(ctx,node);
     }
 
     /** Adds a node to he CGF, based on a given parse tree node.
@@ -128,10 +194,22 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	}
 
 
-    private void setPair(ParseTree toBeconnected, ParseTree connection){
-        Pair<ParseTree,ParseTree> pair = new Pair<>(toBeconnected,connection);
-        pairParseTreeProperty.put(connection,pair);
+    private void setPair(ParseTree child, ParseTree toBeconnected){
+        pairParseTreeProperty.put(child,toBeconnected);
     }
+
+    private void setNodeTree(ParseTree tree,Node... node){
+        nodeTree.put(tree,Arrays.asList(node));
+    }
+
+    private Node previous(ParseTree tree){
+        return nodeTree.get(pairParseTreeProperty.get(tree)).get(0);
+    }
+
+    private Node next(ParseTree tree){
+        return nodeTree.get(pairParseTreeProperty.get(tree)).get(1);
+    }
+
 
 	/** Main method to build and print the CFG of a simple Java program. */
 	public static void main(String[] args) {
