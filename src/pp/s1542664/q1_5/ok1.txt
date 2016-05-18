@@ -1,0 +1,6 @@
+( geek
+  ^geek ^prick geek!
+  ( ^prick prick!? )
+  ( ^slag ^geek slag? (^slag slag!?) geek!! (slag!) )
+  prick! )
+prick

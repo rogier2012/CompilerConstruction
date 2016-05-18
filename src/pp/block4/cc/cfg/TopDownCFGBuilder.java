@@ -94,34 +94,40 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 
     @Override
     public void enterDecl(FragmentParser.DeclContext ctx) {
-        Node node = addNode(ctx,"Declare");
+        Node node = addNode(ctx,"Assign");
 
-        Node previous = previous(ctx);
+        Node previousNode = previous(ctx);
         if (ctx.getParent().getParent() instanceof FragmentParser.WhileStatContext){
-            node.addEdge(previous);
+            node.addEdge(previousNode);
         } else if (ctx.getParent().getParent() instanceof FragmentParser.IfStatContext){
-            previous.addEdge(node);
+            previousNode.addEdge(node);
             node.addEdge(next(ctx));
         } else {
-            previous.addEdge(node);
+            previousNode.addEdge(node);
         }
-
         setNodeTree(ctx,node);
+
     }
 
     @Override
     public void enterAssignStat(FragmentParser.AssignStatContext ctx) {
         Node node = addNode(ctx,"Assign");
-        Node previous = previous(ctx);
+        Node previousNode = previous(ctx);
         if (ctx.getParent().getParent() instanceof FragmentParser.WhileStatContext){
-            node.addEdge(previous);
+            if (nodeTree.get(pairParseTreeProperty.get(ctx)).size() == 2){
+                node.addEdge(nodeTree.get(ctx.getParent().getParent()).get(0));
+                previousNode = next(ctx);
+                previousNode.addEdge(node);
+            } else {
+                node.addEdge(previousNode);
+            }
             setNodeTree(ctx,node);
         } else if (ctx.getParent().getParent() instanceof FragmentParser.IfStatContext){
-            previous.addEdge(node);
+            previousNode.addEdge(node);
             node.addEdge(next(ctx));
             setNodeTree(ctx,next(ctx));
         } else {
-            previous.addEdge(node);
+            previousNode.addEdge(node);
             setNodeTree(ctx,node);
         }
 
@@ -158,10 +164,10 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 
         if (childCount >= 1){
             setPair(ctx.stat(0),ctx.getParent());
-            setPair(ctx.stat(childCount-1),ctx.getParent());
+
         }
 
-        for (int i = 1; i < (childCount-1); i++) {
+        for (int i = 1; i < (childCount); i++) {
             setPair(ctx.stat(i),ctx.stat(i-1));
         }
 

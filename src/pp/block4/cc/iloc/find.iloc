@@ -1,0 +1,12 @@
+int x = in();
+int i;
+for (i = 0; i < a.length; i++) {
+if (a[i] == x) { break;
+} }
+printf("Index: %d%n", i);
+
+
+start:  in "Input"      => r_in
+        loadI 1         => r_i
+        loadI @alength  => r_alength
+        
