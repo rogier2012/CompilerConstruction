@@ -139,6 +139,16 @@ public class LLCalcTest {
 
     }
 
+    @Test
+    public void testIndecrementLL(){
+        Grammar grammar = Grammars.makeIndecrementLL();
+        LLCalc calc = createCalc(grammar);
+        Map<Symbol, Set<Term>> first = calc.getFirst();
+        System.out.println(first);
+        Map<NonTerm, Set<Term>> follow = calc.getFollow();
+        System.out.println(follow);
+    }
+
 
 
 

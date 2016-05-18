@@ -7,6 +7,8 @@ printf("Index: %d%n", i);
 
 
 start:  in "Input"      => r_in
-        loadI 1         => r_i
+        loadI 0         => r_i
         loadI @alength  => r_alength
-        
+while:  cmp_LT r_i,r_alength => r_cmp
+        cbr r_cmp -> body, end
+body:

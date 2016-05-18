@@ -7,6 +7,7 @@ import pp.block2.cc.NonTerm;
 import pp.block2.cc.Symbol;
 import pp.block2.cc.SymbolFactory;
 import pp.block2.cc.Term;
+import pp.s1542664.q1_3.IndecrementLLLexer;
 
 /**
  * Class containing some example grammars.
@@ -102,6 +103,32 @@ public class Grammars {
         g.addRule(q,b,n);
         g.addRule(n,b,c);
         g.addRule(n,c);
+        return g;
+
+
+    }
+
+    public static Grammar makeIndecrementLL(){
+        NonTerm e = new NonTerm("E");
+        NonTerm ep = new NonTerm("EP");
+        NonTerm f = new NonTerm("F");
+        NonTerm t = new NonTerm("T");
+        NonTerm tp = new NonTerm("TP");
+
+        SymbolFactory factory = new SymbolFactory(IndecrementLLLexer.class);
+        Term id = factory.getTerminal(IndecrementLLLexer.ID);
+        Term plus = factory.getTerminal(IndecrementLLLexer.PLUS);
+        Term minus = factory.getTerminal(IndecrementLLLexer.MINUS);
+
+        Grammar g = new Grammar(e);
+        g.addRule(e,f,ep);
+        g.addRule(ep,plus,f,ep);
+        g.addRule(ep,Symbol.EMPTY);
+        g.addRule(f,minus,minus,f);
+        g.addRule(f,t);
+        g.addRule(t,id,tp);
+        g.addRule(tp,plus,plus,tp);
+        g.addRule(tp,Symbol.EMPTY);
         return g;
 
 

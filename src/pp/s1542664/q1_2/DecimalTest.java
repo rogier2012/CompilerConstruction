@@ -17,14 +17,16 @@ public class DecimalTest {
 
     @Test
     public void decimal(){
-        List<Token> test = scan("0.2f .3436D 234234_34234.3453453d 0.1E4_4f 0f 0.1");
+        List<Token> test = scan("0.2f .3436D 234234_34234.3453453d 0.1E4_4f 0f 0.1 0_____4");
         assertEquals(test.get(0).getType(), Decimal.FLOAT);
         assertEquals(test.get(1).getType(), Decimal.DOUBLE);
         assertEquals(test.get(2).getType(), Decimal.DOUBLE);
         assertEquals(test.get(3).getType(), Decimal.FLOAT);
         assertEquals(test.get(4).getType(), Decimal.FLOAT);
         assertEquals(test.get(5).getType(), Decimal.DOUBLE);
+        assertEquals(test.get(6).getType(), Decimal.DOUBLE);
         System.out.println(test);
+
 
     }
 
