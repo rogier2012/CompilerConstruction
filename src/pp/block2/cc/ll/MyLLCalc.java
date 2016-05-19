@@ -125,7 +125,7 @@ public class MyLLCalc implements LLCalc {
     public Map<Rule, Set<Term>> getFirstp() {
         firstp = new HashMap<Rule,Set<Term>>();
         for (Rule p : grammar.getRules()){
-            Set<Term> firstbeta = getFirstBetaI(1,p);
+            Set<Term> firstbeta = new HashSet<>(getFirstBetaI(1,p));
             if (firstbeta.contains(Symbol.EMPTY)){
                 Set<Term> followterms = follow.get(p.getLHS());
                 firstbeta.addAll(followterms);

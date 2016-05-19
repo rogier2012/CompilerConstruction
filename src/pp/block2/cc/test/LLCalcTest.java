@@ -147,6 +147,9 @@ public class LLCalcTest {
         System.out.println(first);
         Map<NonTerm, Set<Term>> follow = calc.getFollow();
         System.out.println(follow);
+        Map<Rule, Set<Term>> firstp = calc.getFirstp();
+        System.out.println(firstp);
+
     }
 
 

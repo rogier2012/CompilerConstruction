@@ -1,14 +1,14 @@
-int x = in();
-int i;
-for (i = 0; i < a.length; i++) {
-if (a[i] == x) { break;
-} }
-printf("Index: %d%n", i);
-
-
-start:  in "Input"      => r_in
-        loadI 0         => r_i
-        loadI @alength  => r_alength
-while:  cmp_LT r_i,r_alength => r_cmp
-        cbr r_cmp -> body, end
-body:
+start:  in "Input"              => r_in
+        loadI 0                 => r_i
+        loadI @alength          => r_alength
+while:  cmp_LT r_i,r_alength    => r_cmp
+        cbr r_cmp               -> body, end
+body:   i2i r_i                 => r_a             // compute address of a[i]
+        multI r_a,4             => r_a         // multiply by size of int
+        addI r_a,@a             => r_a         // add a's base offset
+        loadAO r_arp,r_a        => r_ai   // r_ai <- a[i]
+        cmp_EQ r_in,r_ai        => r_cmp1
+        cbr r_cmp1              -> end, endif
+endif:  addI r_i,1              => r_i
+        jumpI                   -> while
+end:    out "Index: ", r_i
