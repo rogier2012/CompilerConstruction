@@ -1,29 +1,38 @@
 package pp.s1542664.q1_5;
 
-/** Store and tests for nested scopes of variable declarations.
+/**
+ * Store and tests for nested scopes of variable declarations.
  * A newly constructed {@link SymbolTable} should consist of a single
- * (outer) scope. 
+ * (outer) scope.
  */
 public interface SymbolTable<T> {
-	/** Adds a next deeper scope level. */
-	public abstract void openScope();
+    /**
+     * Adds a next deeper scope level.
+     */
+    public abstract void openScope();
 
-	/** Removes the deepest scope level.
-	 * @throws RuntimeException if the table only contains the outer scope.
-	 */
-	public abstract void closeScope();
+    /**
+     * Removes the deepest scope level.
+     *
+     * @throws RuntimeException if the table only contains the outer scope.
+     */
+    public abstract void closeScope();
 
-	/** Tries to declare a given identifier in the deepest scope level.
-	 * @return <code>true</code> if the identifier was added,
-	 * <code>false</code> if it was already declared in this scope.
-	 */
-	public abstract boolean add(String id, T attr);
+    /**
+     * Tries to declare a given identifier in the deepest scope level.
+     *
+     * @return <code>true</code> if the identifier was added,
+     * <code>false</code> if it was already declared in this scope.
+     */
+    public abstract boolean add(String id, T attr);
 
-	/** Tests if a given identifier is in the scope of any declaration.
-	 * @return <code>true</code> if there is any enclosing scope in which
-	 * the identifier is declared; <code>false</code> otherwise.
-	 */
-	public abstract boolean contains(String id);
+    /**
+     * Tests if a given identifier is in the scope of any declaration.
+     *
+     * @return <code>true</code> if there is any enclosing scope in which
+     * the identifier is declared; <code>false</code> otherwise.
+     */
+    public abstract boolean contains(String id);
 
-	public T get(String id);
+    public T get(String id);
 }

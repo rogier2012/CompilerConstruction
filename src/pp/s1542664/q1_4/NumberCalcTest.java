@@ -9,33 +9,49 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Rogier on 20-05-16.
+ * The NumberCalcTest for exercise 4 of the first take home exam.
+ * This JUnit test will test three different numbers calculated by the NumberCalc which implemented the Number.g4 grammar.
+ * It also tests the NumberAttr.g4 attribute rule grammar and its generated NumberAttrParser.
+ * The first test is for decimals, the second is for binary numbers and the third one is for hexadecimal numbers.
  */
 public class NumberCalcTest {
 
     private final ParseTreeWalker walker = new ParseTreeWalker();
     private final NumberCalc number = new NumberCalc();
 
+    /*
+     This JUnit test tests three different decimal numbers and compares it to the given integer value.
+     */
     @Test
     public void decimalTest() {
-        test(101,"101");
-        test(74567,"74567");
+        test(101, "101");
+        test(74567, "74567");
         test(16423317, "16423317");
     }
 
+    /*
+     This JUnit test tests three different binary numbers and compares it to the given integer value.
+     */
     @Test
-    public void binaryTest(){
-        test(5,"b101");
+    public void binaryTest() {
+        test(5, "b101");
         test(74567, "b10010001101000111");
         test(16423317, "b111110101001100110010101");
     }
 
+    /*
+     This JUnit test tests three different hexadecimal numbers and compares it to the given integer value.
+     */
     @Test
-    public void hexTest(){
-        test(257,"x101");
-        test(74567,"x12347");
+    public void hexTest() {
+        test(257, "x101");
+        test(74567, "x12347");
         test(16423317, "xFA9995");
     }
 
+    /*
+     This method will test the attribute grammar and the listener to the expected integer value.
+     */
     private void test(int expected, String num) {
         assertEquals(expected, parseNumberAttr(num).val);
         ParseTree tree = parseCalc(num);
@@ -57,7 +73,6 @@ public class NumberCalcTest {
         Lexer lexer = new NumberAttrLexer(chars);
         TokenStream tokens = new CommonTokenStream(lexer);
         NumberAttrParser parser = new NumberAttrParser(tokens);
-        NumberAttrParser.NumContext tree = parser.num();
-        return tree;
+        return parser.num();
     }
 }

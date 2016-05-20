@@ -7,9 +7,13 @@ import java.util.Stack;
 
 /**
  * Created by Rogier on 20-05-16.
+ * The EmoteSymbolTable for exercise 5 of the first take home exam.
+ * This SymbolTable is based on a Stack with Maps.
+ * Each scope will contain all id's declared in this scopes plus all the other id's declared in outer scopes.
+ * This class also has an additional method for setting the value in the current scope.
  */
 public class EmoteSymbolTable<T> implements SymbolTable<T> {
-    private Stack<Map<String,T>> scopes;
+    private Stack<Map<String, T>> scopes;
 
 
     public EmoteSymbolTable() {
@@ -22,17 +26,17 @@ public class EmoteSymbolTable<T> implements SymbolTable<T> {
     }
 
     public void closeScope() {
-        if (this.scopes.size() == 1){
+        if (this.scopes.size() == 1) {
             throw new RuntimeException();
         }
         this.scopes.pop();
     }
 
     public boolean add(String id, T attr) {
-        if (this.scopes.peek().containsKey(id) ){
+        if (this.scopes.peek().containsKey(id)) {
             return false;
         } else {
-            this.scopes.peek().put(id,attr);
+            this.scopes.peek().put(id, attr);
             return true;
         }
     }
@@ -42,11 +46,11 @@ public class EmoteSymbolTable<T> implements SymbolTable<T> {
         return this.scopes.peek().containsKey(id);
     }
 
-    public T get(String id){
+    public T get(String id) {
         return this.scopes.peek().get(id);
     }
 
-    public void setEmotion(String id,T emotion){
-        this.scopes.peek().put(id,emotion);
+    public void setValue(String id, T emotion) {
+        this.scopes.peek().put(id, emotion);
     }
 }
