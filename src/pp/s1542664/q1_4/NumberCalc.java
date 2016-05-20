@@ -3,8 +3,6 @@ package pp.s1542664.q1_4;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import java.math.BigInteger;
-
 /**
  * Created by Rogier on 20-05-16.
  */

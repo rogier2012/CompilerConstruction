@@ -36,8 +36,7 @@ seq[ int base ] returns [ int val, int position ]
 
 dig returns [ int val ]
     : DIGIT
-      { char c = $DIGIT.getText().charAt(0);
-        $val = Integer.parseInt($DIGIT().getText(), 16 ); ; }
+      { $val = Integer.parseInt($DIGIT().getText(), 16 ); ; }
     ;
 
 

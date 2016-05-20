@@ -2,12 +2,11 @@ package pp.s1542664.q1_2;
 
 import org.antlr.v4.runtime.*;
 import org.junit.Test;
-import pp.block1.cc.antlr.Example;
-import pp.block3.cc.tabular.MyErrorListener;
 
-import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Rogier on 18-05-16.
