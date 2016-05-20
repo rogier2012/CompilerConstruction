@@ -25,6 +25,7 @@ public class DecimalTest {
         assertEquals(test.get(5).getType(), Decimal.DOUBLE);
         assertEquals(test.get(6).getType(), Decimal.DOUBLE);
         System.out.println(test);
+
     }
 
 //    This method only prints a message to the console if the lexer succeeds but should not have.

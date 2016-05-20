@@ -48,6 +48,7 @@ public class CalcCompiler extends CalcBaseListener {
 
 	/** Compiles a given Calc-parse tree into an ILOC program. */
 	public Program compile(ParseTree tree) {
+        prog = new Program();
 		registers = new ParseTreeProperty<>();
 		registerCount = 0;
         new ParseTreeWalker().walk(this,tree);
@@ -57,7 +58,7 @@ public class CalcCompiler extends CalcBaseListener {
     @Override
     public void exitComplete(CompleteContext ctx) {
         Reg expr = getRegister(ctx.expr());
-        emit(OpCode.out,expr);
+        emit(OpCode.out,new Str("val: "),expr);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class CalcCompiler extends CalcBaseListener {
         Reg register = new Reg("r" +registerCount);
         setRegister(ctx,register);
         Reg expr1 = getRegister(ctx.expr());
-        emit(OpCode.rsubI,new Num(0),expr1,register);
+        emit(OpCode.rsubI,expr1,new Num(0),register);
     }
 
     @Override
@@ -96,7 +97,6 @@ public class CalcCompiler extends CalcBaseListener {
     @Override
 	public void exitNumber(CalcParser.NumberContext ctx) {
         Reg register = new Reg("r"+registerCount);
-//        System.out.println(ctx.NUMBER().);
         setRegister(ctx, register);
         emit(OpCode.loadI, new Num(Integer.parseInt(ctx.NUMBER().toString())),register);
 	}
