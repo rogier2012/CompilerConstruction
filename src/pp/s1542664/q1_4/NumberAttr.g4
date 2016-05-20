@@ -4,6 +4,7 @@ grammar NumberAttr;
 //    private int base = 0;
 }
 
+/** Number: sequence of digits optionally preceded by a base prefix */
 num returns [ int val ]
     : p=prf s=seq[$p.base]
       { $val = $s.val;
@@ -14,6 +15,7 @@ num returns [ int val ]
         }
     ;
 
+/** Sequence of digits */
 prf returns [ int base]
     : HEX
       { $base = 16;}
@@ -21,6 +23,7 @@ prf returns [ int base]
       { $base = 2;}
     ;
 
+/** Prefix: x stands for hexadecimal, b for binary */
 seq[ int base ] returns [ int val, int position ]
     : d=dig
       { $position = 0;
@@ -34,6 +37,7 @@ seq[ int base ] returns [ int val, int position ]
         }
     ;
 
+/** Single digit (hexadecimal range) */
 dig returns [ int val ]
     : DIGIT
       { $val = Integer.parseInt($DIGIT().getText(), 16 ); ; }
@@ -42,5 +46,9 @@ dig returns [ int val ]
 
 /** Digit token */
 DIGIT: [0-9A-F];
+
+/** Binary prefix */
 BIN: 'b';
+
+/** Hexadecimal prefix */
 HEX: 'x';

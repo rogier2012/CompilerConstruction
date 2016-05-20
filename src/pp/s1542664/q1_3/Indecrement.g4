@@ -15,4 +15,5 @@ t       : t '+''+'
 
 ID      : [a-z]+;
 
-WS      : [ \t\r\n]+ -> skip ; // At least one whitespace char; don't make token
+WS      : [ \t\r\n]+ -> skip ;
+// At least one whitespace char; don't make token
