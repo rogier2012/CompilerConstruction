@@ -14,13 +14,14 @@ f       : MINUS MINUS f
 t       : ID tP
         ;
 
-tP      : PLUS PLUS tP
+tP      : PLUSPLUS tP
         |
         ;
 
 ID      : [a-z]+;
 
 PLUS    : '+';
+PLUSPLUS : '++';
 
 MINUS   : '-';
 
