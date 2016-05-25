@@ -35,9 +35,6 @@ public class Checker extends SimplePascalBaseListener {
 		return this.result;
 	}
 
-
-
-
     @Override
     public void exitVar(SimplePascalParser.VarContext ctx) {
         int childcount = ctx.ID().size();
@@ -51,6 +48,7 @@ public class Checker extends SimplePascalBaseListener {
     @Override
     public void exitIdTarget(SimplePascalParser.IdTargetContext ctx) {
         this.setType(ctx, this.scope.type(ctx.ID().getText()));
+        this.setOffset(ctx,this.scope.offset(ctx.ID().getText()));
     }
 
     @Override
@@ -60,18 +58,30 @@ public class Checker extends SimplePascalBaseListener {
         if (type == type1){
             setType(ctx, type);
         } else {
-            errors.add("iets");
+            errors.add("Assignment type error");
         }
+        this.setOffset(ctx,this.result.getOffset(ctx.target()));
+
     }
 
     @Override
     public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
-        super.exitIfStat(ctx);
+        if (this.getType(ctx.expr())==Type.BOOL){
+            setType(ctx, Type.BOOL);
+
+        } else {
+            errors.add("If type error");
+        }
     }
 
     @Override
     public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
-        super.exitWhileStat(ctx);
+        if (this.getType(ctx.expr())==Type.BOOL){
+            setType(ctx, Type.BOOL);
+
+        } else {
+            errors.add("While type error");
+        }
     }
 
     @Override
