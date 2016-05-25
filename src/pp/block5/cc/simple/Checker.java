@@ -61,7 +61,7 @@ public class Checker extends SimplePascalBaseListener {
             errors.add("Assignment type error");
         }
         this.setOffset(ctx,this.result.getOffset(ctx.target()));
-
+		this.setEntry(ctx,ctx.expr());
     }
 
     @Override
@@ -72,31 +72,39 @@ public class Checker extends SimplePascalBaseListener {
         } else {
             errors.add("If type error");
         }
+        this.setEntry(ctx,ctx.expr());
+        this.setEntry(ctx,entry(ctx.stat(0)));
     }
 
     @Override
     public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
         if (this.getType(ctx.expr())==Type.BOOL){
             setType(ctx, Type.BOOL);
-
         } else {
             errors.add("While type error");
         }
+        this.setEntry(ctx,ctx.expr());
+        this.setEntry(ctx,entry(ctx.stat()));
     }
 
     @Override
     public void exitInStat(SimplePascalParser.InStatContext ctx) {
-        super.exitInStat(ctx);
+        this.setEntry(ctx,ctx.target());
     }
 
     @Override
     public void exitOutStat(SimplePascalParser.OutStatContext ctx) {
-        super.exitOutStat(ctx);
+        this.setEntry(ctx,ctx.expr());
     }
 
     @Override
     public void exitBlockStat(SimplePascalParser.BlockStatContext ctx) {
-        super.exitBlockStat(ctx);
+        this.setEntry(ctx,entry(ctx.block()));
+    }
+
+    @Override
+    public void exitBlock(SimplePascalParser.BlockContext ctx) {
+        this.setEntry(ctx,entry(ctx.stat(0)));
     }
 
     // Override the listener methods for the statement nodes

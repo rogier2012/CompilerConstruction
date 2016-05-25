@@ -34,7 +34,7 @@ public class SimpleCheckerTest {
 	public void testBasicEntries() throws IOException, ParseException {
 		ParseTree tree = parse("basic");
 		Result result = check(tree);
-		ParseTree body = tree.getChild(3).getChild(1);
+        ParseTree body = tree.getChild(3).getChild(1);
 		ParseTree assX = body.getChild(1);
 		assertEquals(assX.getChild(2), result.getEntry(assX));
 		assertEquals(assX.getChild(2), result.getEntry(body));

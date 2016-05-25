@@ -108,6 +108,8 @@ public class SimplePascalCompiler {
 		parser.removeErrorListeners();
 		parser.addErrorListener(listener);
 		ParseTree result = parser.program();
+//		System.out.println(result.toStringTree(parser));
+
 		listener.throwException();
 		return result;
 	}
