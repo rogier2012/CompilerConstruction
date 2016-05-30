@@ -52,7 +52,7 @@ public class SimpleCheckerTest {
 	@Test
 	public void testGCD() throws IOException, ParseException {
 		check(parse("gcd"));
-	}
+    }
 
 	@Test
 	public void testPrime() throws IOException, ParseException {
