@@ -172,8 +172,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             labels.put(ctx.expr(),labels.get(ctx));
         }
-
-        return super.visitParExpr(ctx);
+        visit(ctx.expr());
+        return emit(OpCode.i2i,reg(ctx.expr()),reg(ctx));
     }
 
     @Override
@@ -197,8 +197,10 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         }
         visit(ctx.expr());
         emit(OpCode.cbr,reg(ctx.expr()),label1, label2);
-        for (int i = 0; i < statCount; i++) {
-            visit(ctx.stat(i));
+        visit(ctx.stat(0));
+        emit(OpCode.jumpI,label3);
+        if (statCount == 2){
+            visit(ctx.stat(1));
         }
         return emit(label3, OpCode.nop);
 	}
@@ -247,8 +249,9 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
+        labels.put(ctx.expr(),label);
         visit(ctx.expr());
-        return emit(label,OpCode.out,new Str(ctx.STR().getSymbol().getText().replace("\"","")),reg(ctx.expr()));
+        return emit(OpCode.out,new Str(ctx.STR().getSymbol().getText().replace("\"","")),reg(ctx.expr()));
 
     }
 

@@ -1,20 +1,11 @@
 package pp.iloc;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Scanner;
-
 import pp.iloc.eval.Machine;
-import pp.iloc.model.Label;
-import pp.iloc.model.Num;
-import pp.iloc.model.Op;
-import pp.iloc.model.OpClaz;
-import pp.iloc.model.OpCode;
-import pp.iloc.model.Program;
+import pp.iloc.model.*;
 import pp.iloc.parse.FormatException;
+
+import java.io.*;
+import java.util.Scanner;
 
 /**
  * ILOC program simulator
@@ -236,7 +227,8 @@ public class Simulator {
 			c.setReg(2, c.reg(0) > c.reg(1));
 			break;
 		case cmp_NE:
-			c.setReg(2, c.reg(0) != c.reg(1));
+//            System.out.println("Registers: " + c.reg(0) + ", " + c.reg(1));
+            c.setReg(2, c.reg(0) != c.reg(1));
 			break;
 		case cbr:
 			if (c.reg(0) == 0) {
