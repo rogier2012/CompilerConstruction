@@ -163,6 +163,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
             label2 = new Label("endif");
         } else if (statCount == 2){
             label2 = new Label("else");
+            labels.put(ctx.stat(1),label2);
         }
 
 
@@ -184,7 +185,39 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         return emit(label, OpCode.storeAI, reg(ctx.expr()), arp, new Num(checkResult.getOffset(ctx)));
     }
 
+    @Override
+    public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) {
+        Label label1 = new Label("while");
+        labels.put(ctx.expr(),label1);
+        Label label2 = new Label("body");
+        labels.put(ctx.stat(),label2);
+        Label label3 = new Label("endwhile");
+        visit(ctx.expr());
+        emit(OpCode.cbr,reg(ctx.expr()),label2,label3);
+        visit(ctx.stat());
+        emit(OpCode.jump,label1);
+        return emit(label3,OpCode.nop);
+    }
 
+    @Override
+    public Op visitInStat(SimplePascalParser.InStatContext ctx) {
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        return emit(label,OpCode.in, new Str(ctx.STR().getText()),reg(ctx));
+
+    }
+
+    @Override
+    public Op visitOutStat(SimplePascalParser.OutStatContext ctx) {
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        return emit(label,OpCode.out,new Str(ctx.STR().getText()),reg(ctx));
+
+    }
 
     @Override
     public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) {
