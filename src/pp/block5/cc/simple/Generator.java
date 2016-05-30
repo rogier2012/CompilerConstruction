@@ -102,7 +102,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (((TerminalNode) ctx.prfOp().getChild(0)).getSymbol().getType() == SimplePascalParser.MINUS){
             operation = emit(OpCode.rsubI,reg(ctx.expr()),new Num(0),reg(ctx));
         } else {
-            operation = emit(OpCode.rsubI,reg(ctx.expr()),new Num(1),reg(ctx));
+            emit(OpCode.loadI,new Num(0),reg(ctx));
+            operation = emit(OpCode.cmp_EQ,reg(ctx.expr()),reg(ctx),reg(ctx));
         }
         return operation;
     }

@@ -227,8 +227,8 @@ public class Simulator {
 			c.setReg(2, c.reg(0) > c.reg(1));
 			break;
 		case cmp_NE:
-//            System.out.println("Registers: " + c.reg(0) + ", " + c.reg(1));
             c.setReg(2, c.reg(0) != c.reg(1));
+
 			break;
 		case cbr:
 			if (c.reg(0) == 0) {
