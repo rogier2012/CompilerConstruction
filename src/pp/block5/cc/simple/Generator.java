@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import pp.block5.cc.pascal.SimplePascalBaseVisitor;
+import pp.block5.cc.pascal.SimplePascalParser;
 import pp.iloc.Simulator;
 import pp.iloc.model.*;
 /** Class to generate ILOC code for Simple Pascal. */
@@ -27,6 +28,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	/** Association of expression and target nodes to registers. */
 	private ParseTreeProperty<Reg> regs;
 
+
 	/** Generates ILOC code for a given parse tree,
 	 * given a pre-computed checker result.
 	 */
@@ -40,7 +42,106 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		return this.prog;
 	}
 
-	// Override the visitor methods
+
+
+    @Override
+    public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) {
+        visit(ctx.expr(0));
+        visit(ctx.expr(1));
+        int ruleindex = ctx.multOp().getRuleIndex();
+        OpCode opCode;
+        if (ruleindex == 0){
+            opCode = OpCode.mult;
+        } else {
+            opCode = OpCode.div;
+        }
+        return emit(opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+    }
+
+    @Override
+    public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
+        visit(ctx.expr(0));
+        visit(ctx.expr(1));
+        int ruleindex = ctx.plusOp().getRuleIndex();
+        OpCode opCode;
+        if (ruleindex == 0){
+            opCode = OpCode.add;
+        } else {
+            opCode = OpCode.sub;
+        }
+
+        return emit(opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+    }
+
+    @Override
+    public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
+        visit(ctx.expr());
+        Op operation;
+        if (ctx.prfOp().getRuleIndex() == 0){
+            operation = emit(OpCode.rsubI,reg(ctx.expr()),new Num(0),reg(ctx));
+        } else {
+            operation = emit(OpCode.rsubI,reg(ctx.expr()),new Num(1),reg(ctx));
+        }
+        return operation;
+    }
+
+    @Override
+    public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
+        visit(ctx.expr(0));
+        visit(ctx.expr(1));
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        int ruleIndex = ctx.boolOp().getRuleIndex();
+        OpCode opCode;
+        if (ruleIndex == 0){
+            opCode = OpCode.and;
+        } else {
+            opCode = OpCode.or;
+        }
+
+        return emit(label,opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+    }
+
+	@Override
+	public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
+        int statCount = ctx.stat().size();
+        Label label = null;
+        if (statCount == 1){
+            label = new Label("endif");
+        } else if (statCount == 2){
+            label = new Label("else");
+        }
+        labels.put(ctx.expr(),label);
+        visit(ctx.expr());
+        for (int i = 0; i < statCount; i++) {
+            visit(ctx.stat(i));
+        }
+        return super.visitIfStat(ctx);
+	}
+
+	@Override
+    public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
+        return null;
+    }
+
+    @Override
+    public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) {
+        return emit(OpCode.loadI,new Num(Integer.parseInt(ctx.NUM().getText())),reg(ctx));
+    }
+
+    @Override
+    public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) {
+        return emit(OpCode.loadI,FALSE_VALUE,reg(ctx));
+    }
+
+    @Override
+    public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
+        return emit(OpCode.loadI,TRUE_VALUE,reg(ctx));
+    }
+
+    // Override the visitor methods
 	/** Constructs an operation from the parameters 
 	 * and adds it to the program under construction. */
 	private Op emit(Label label, OpCode opCode, Operand... args) {
@@ -97,6 +198,10 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		}
 		return result;
 	}
+
+    public boolean hasLabel(ParseTree node){
+        return labels.get(node) != null;
+    }
 
 	/** Assigns a register to a given parse tree node. */
 	private void setReg(ParseTree node, Reg reg) {
