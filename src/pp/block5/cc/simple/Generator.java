@@ -29,6 +29,10 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	/** Association of expression and target nodes to registers. */
 	private ParseTreeProperty<Reg> regs;
 
+    private int ifcount;
+
+    private int whilecount;
+
 
 	/** Generates ILOC code for a given parse tree,
 	 * given a pre-computed checker result.
@@ -39,6 +43,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 		this.regs = new ParseTreeProperty<>();
 		this.labels = new ParseTreeProperty<>();
 		this.regCount = 0;
+        this.ifcount = 0;
+        this.whilecount = 0;
 		tree.accept(this);
 		return this.prog;
 	}
@@ -51,6 +57,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
+        labels.put(ctx.expr(0),label);
         visit(ctx.expr(0));
         visit(ctx.expr(1));
         int ruleindex = ((TerminalNode) ctx.multOp().getChild(0)).getSymbol().getType();
@@ -60,7 +67,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         } else {
             opCode = OpCode.div;
         }
-        return emit(label,opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+        return emit(opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
     }
 
     @Override
@@ -69,6 +76,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
+        labels.put(ctx.expr(0),label);
         visit(ctx.expr(0));
         visit(ctx.expr(1));
         int ruleIndex = ((TerminalNode) ctx.plusOp().getChild(0)).getSymbol().getType();
@@ -79,7 +87,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
             opCode = OpCode.sub;
         }
 
-        return emit(label,opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+        return emit(opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
     }
 
     @Override
@@ -88,24 +96,27 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
+        labels.put(ctx.expr(),label);
         visit(ctx.expr());
         Op operation;
         if (((TerminalNode) ctx.prfOp().getChild(0)).getSymbol().getType() == SimplePascalParser.MINUS){
-            operation = emit(label,OpCode.rsubI,reg(ctx.expr()),new Num(0),reg(ctx));
+            operation = emit(OpCode.rsubI,reg(ctx.expr()),new Num(0),reg(ctx));
         } else {
-            operation = emit(label,OpCode.rsubI,reg(ctx.expr()),new Num(1),reg(ctx));
+            operation = emit(OpCode.rsubI,reg(ctx.expr()),new Num(1),reg(ctx));
         }
         return operation;
     }
 
     @Override
     public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
-        visit(ctx.expr(0));
-        visit(ctx.expr(1));
         Label label = null;
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
+        labels.put(ctx.expr(0),label);
+        visit(ctx.expr(0));
+        visit(ctx.expr(1));
+
         int ruleIndex = ((TerminalNode) ctx.boolOp().getChild(0)).getSymbol().getType();
         OpCode opCode;
         if (ruleIndex == SimplePascalParser.AND){
@@ -114,19 +125,21 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
             opCode = OpCode.or;
         }
 
-        return emit(label,opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
+        return emit(opCode,reg(ctx.expr(0)), reg(ctx.expr(1)), reg(ctx));
 
 
     }
 
     @Override
     public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
-        visit(ctx.expr(0));
-        visit(ctx.expr(1));
         Label label = null;
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
+        labels.put(ctx.expr(0),label);
+        visit(ctx.expr(0));
+        visit(ctx.expr(1));
+
         int ruleIndex = ((TerminalNode) ctx.compOp().getChild(0)).getSymbol().getType();
         OpCode opCode = null;
         switch (ruleIndex){
@@ -151,52 +164,69 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 
         }
 
-        return emit(label,opCode, reg(ctx.expr(0)),reg(ctx.expr(1)),reg(ctx));
+        return emit(opCode, reg(ctx.expr(0)),reg(ctx.expr(1)),reg(ctx));
     }
 
-	@Override
-	public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
-        int statCount = ctx.stat().size();
-        Label label1 = new Label("then");
-        labels.put(ctx.stat(0),label1);
-        Label label2 = null;
-        if (statCount == 1){
-            label2 = new Label("endif");
-        } else if (statCount == 2){
-            label2 = new Label("else");
-            labels.put(ctx.stat(1),label2);
+    @Override
+    public Op visitParExpr(SimplePascalParser.ParExprContext ctx) {
+        if (hasLabel(ctx)){
+            labels.put(ctx.expr(),labels.get(ctx));
         }
 
+        return super.visitParExpr(ctx);
+    }
 
+    @Override
+	public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        labels.put(ctx.expr(), label);
+        ifcount++;
+        int statCount = ctx.stat().size();
+        Label label1 = new Label("then"+ifcount);
+        labels.put(ctx.stat(0),label1);
+        Label label3 = new Label("endif"+ifcount);
+        Label label2 = null;
+        if (statCount == 2){
+            label2 = new Label("else"+ifcount);
+            labels.put(ctx.stat(1),label2);
+        } else {
+            label2 = label3;
+        }
         visit(ctx.expr());
         emit(OpCode.cbr,reg(ctx.expr()),label1, label2);
         for (int i = 0; i < statCount; i++) {
             visit(ctx.stat(i));
         }
-        return emit(label2, OpCode.nop);
+        return emit(label3, OpCode.nop);
 	}
 
     @Override
     public Op visitAssStat(SimplePascalParser.AssStatContext ctx) {
-        visit(ctx.expr());
+
         Label label = null;
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
-        return emit(label, OpCode.storeAI, reg(ctx.expr()), arp, new Num(checkResult.getOffset(ctx)));
+        labels.put(ctx.expr(),label);
+        visit(ctx.expr());
+        return emit( OpCode.storeAI, reg(ctx.expr()), arp, new Num(checkResult.getOffset(ctx)));
     }
 
     @Override
     public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) {
-        Label label1 = new Label("while");
+        whilecount++;
+        Label label1 = new Label("while" + whilecount);
         labels.put(ctx.expr(),label1);
-        Label label2 = new Label("body");
+        Label label2 = new Label("body" + whilecount);
         labels.put(ctx.stat(),label2);
-        Label label3 = new Label("endwhile");
+        Label label3 = new Label("endwhile" + whilecount);
         visit(ctx.expr());
         emit(OpCode.cbr,reg(ctx.expr()),label2,label3);
         visit(ctx.stat());
-        emit(OpCode.jump,label1);
+        emit(OpCode.jumpI,label1);
         return emit(label3,OpCode.nop);
     }
 
@@ -206,7 +236,8 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
-        return emit(label,OpCode.in, new Str(ctx.STR().getText()),reg(ctx));
+        emit(label,OpCode.in, new Str(ctx.STR().getText()),reg(ctx));
+        return emit(OpCode.storeAI,reg(ctx), arp, new Num(checkResult.getOffset(ctx.target())));
 
     }
 
@@ -216,28 +247,53 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
-        return emit(label,OpCode.out,new Str(ctx.STR().getText()),reg(ctx));
+        visit(ctx.expr());
+        return emit(label,OpCode.out,new Str(ctx.STR().getText()),reg(ctx.expr()));
 
+    }
+
+    @Override
+    public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) {
+        if (hasLabel(ctx)){
+            labels.put(ctx.block().stat(0),labels.get(ctx));
+        }
+        return super.visitBlockStat(ctx);
     }
 
     @Override
     public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) {
-        return emit(OpCode.loadI,new Num(Integer.parseInt(ctx.NUM().getText())),reg(ctx));
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        return emit(label,OpCode.loadI,new Num(Integer.parseInt(ctx.NUM().getText())),reg(ctx));
     }
 
     @Override
     public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) {
-        return emit(OpCode.loadAI,arp,new Num(checkResult.getOffset(ctx)),reg(ctx));
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        return emit(label,OpCode.loadAI,arp,new Num(checkResult.getOffset(ctx)),reg(ctx));
     }
 
     @Override
     public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) {
-        return emit(OpCode.loadI,FALSE_VALUE,reg(ctx));
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        return emit(label,OpCode.loadI,FALSE_VALUE,reg(ctx));
     }
 
     @Override
     public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
-        return emit(OpCode.loadI,TRUE_VALUE,reg(ctx));
+        Label label = null;
+        if (hasLabel(ctx)){
+            label = labels.get(ctx);
+        }
+        return emit(label,OpCode.loadI,TRUE_VALUE,reg(ctx));
     }
 
     // Override the visitor methods
