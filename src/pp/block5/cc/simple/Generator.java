@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import pp.block5.cc.pascal.SimplePascalBaseVisitor;
 import pp.block5.cc.pascal.SimplePascalParser;
 import pp.iloc.Simulator;
@@ -52,9 +53,9 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         }
         visit(ctx.expr(0));
         visit(ctx.expr(1));
-        int ruleindex = ctx.multOp().getRuleIndex();
+        int ruleindex = ((TerminalNode) ctx.multOp().getChild(0)).getSymbol().getType();
         OpCode opCode;
-        if (ruleindex == 0){
+        if (ruleindex == SimplePascalParser.STAR){
             opCode = OpCode.mult;
         } else {
             opCode = OpCode.div;
@@ -70,9 +71,9 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         }
         visit(ctx.expr(0));
         visit(ctx.expr(1));
-        int ruleIndex = ctx.plusOp().getRuleIndex();
+        int ruleIndex = ((TerminalNode) ctx.plusOp().getChild(0)).getSymbol().getType();
         OpCode opCode;
-        if (ruleIndex == 0){
+        if (ruleIndex == SimplePascalParser.PLUS){
             opCode = OpCode.add;
         } else {
             opCode = OpCode.sub;
@@ -89,7 +90,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         }
         visit(ctx.expr());
         Op operation;
-        if (ctx.prfOp().getRuleIndex() == 0){
+        if (((TerminalNode) ctx.prfOp().getChild(0)).getSymbol().getType() == SimplePascalParser.MINUS){
             operation = emit(label,OpCode.rsubI,reg(ctx.expr()),new Num(0),reg(ctx));
         } else {
             operation = emit(label,OpCode.rsubI,reg(ctx.expr()),new Num(1),reg(ctx));
@@ -105,9 +106,9 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
-        int ruleIndex = ctx.boolOp().getRuleIndex();
+        int ruleIndex = ((TerminalNode) ctx.boolOp().getChild(0)).getSymbol().getType();
         OpCode opCode;
-        if (ruleIndex == 0){
+        if (ruleIndex == SimplePascalParser.AND){
             opCode = OpCode.and;
         } else {
             opCode = OpCode.or;
@@ -126,25 +127,25 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         if (hasLabel(ctx)){
             label = labels.get(ctx);
         }
-        int ruleIndex = ctx.compOp().getRuleIndex();
+        int ruleIndex = ((TerminalNode) ctx.compOp().getChild(0)).getSymbol().getType();
         OpCode opCode = null;
         switch (ruleIndex){
-            case 0:
+            case SimplePascalParser.LE:
                 opCode = OpCode.cmp_LE;
                 break;
-            case 1:
+            case SimplePascalParser.LT:
                 opCode = OpCode.cmp_LT;
                 break;
-            case 2:
+            case SimplePascalParser.GE:
                 opCode = OpCode.cmp_GE;
                 break;
-            case 3:
+            case SimplePascalParser.GT:
                 opCode = OpCode.cmp_GT;
                 break;
-            case 4:
+            case SimplePascalParser.EQ:
                 opCode = OpCode.cmp_EQ;
                 break;
-            case 5:
+            case SimplePascalParser.NE:
                 opCode = OpCode.cmp_NE;
                 break;
 
