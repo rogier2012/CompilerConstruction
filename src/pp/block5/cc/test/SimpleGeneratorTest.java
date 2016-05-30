@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("javadoc")
 public class SimpleGeneratorTest {
-	private final static String BASE_DIR = "pp/block5/cc/sample";
+	private final static String BASE_DIR = "src/pp/block5/cc/sample";
 	private final static String EXT = ".pascal";
 	private final SimplePascalCompiler compiler = SimplePascalCompiler
 			.instance();

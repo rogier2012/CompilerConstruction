@@ -185,12 +185,12 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
         labels.put(ctx.expr(), label);
         ifcount++;
         int statCount = ctx.stat().size();
-        Label label1 = new Label("then"+ifcount);
+        Label label1 = createLabel(ctx,"then");
         labels.put(ctx.stat(0),label1);
-        Label label3 = new Label("endif"+ifcount);
-        Label label2 = null;
+        Label label3 = createLabel(ctx,"endif");
+        Label label2;
         if (statCount == 2){
-            label2 = new Label("else"+ifcount);
+            label2 = createLabel(ctx,"else");
             labels.put(ctx.stat(1),label2);
         } else {
             label2 = label3;
@@ -218,11 +218,11 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
     @Override
     public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) {
         whilecount++;
-        Label label1 = new Label("while" + whilecount);
+        Label label1 = createLabel(ctx,"while");
         labels.put(ctx.expr(),label1);
-        Label label2 = new Label("body" + whilecount);
+        Label label2 = createLabel(ctx, "body");
         labels.put(ctx.stat(),label2);
-        Label label3 = new Label("endwhile" + whilecount);
+        Label label3 = createLabel(ctx,"endwhile");
         visit(ctx.expr());
         emit(OpCode.cbr,reg(ctx.expr()),label2,label3);
         visit(ctx.stat());
@@ -248,7 +248,7 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
             label = labels.get(ctx);
         }
         visit(ctx.expr());
-        return emit(label,OpCode.out,new Str(ctx.STR().getText()),reg(ctx.expr()));
+        return emit(label,OpCode.out,new Str(ctx.STR().getSymbol().getText().replace("\"","")),reg(ctx.expr()));
 
     }
 
