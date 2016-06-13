@@ -1,26 +1,28 @@
-start:  in "Number 1? "                     => r_a1
-        in "Number 2? "                     => r_a2
-        loadI #end                          => r_return_address
-        loadI 0                             => r_count
-        push r_return_address
-if:     cmp_EQ r_a1, r_a2                   => r_cmp
-        cbr r_cmp                           -> then1, elif
-then1:  i2i r_a1                            => r_ans
+start:  in "Number 1? "                     => r_a1             // prompt number 1
+        in "Number 2? "                     => r_a2             // prompt number 2
+        loadI #end                          => r_return_address // load the return address
+        loadI 0                             => r_count          // initialize the call count register
+        push r_return_address                                   // push the return address on the stack
+gcd:     cmp_EQ r_a1, r_a2                   => r_cmp
+        cbr r_cmp                           -> then1, elif      // branch if a1 == a2
+then1:  push r_a1                                               // push a1 as return value on the stack
         jumpI -> endif
 elif:   cmp_GT r_a1, r_a2                   => r_cmp
-        cbr r_cmp                           -> then2, else
-then2:  sub r_a1, r_a2                      => r_a1
+        cbr r_cmp                           -> then2, else      // branch if a1 > a1 to then2, otherwise to else
+then2:  sub r_a1, r_a2                      => r_a1             // a1 = a1 -a2
         loadI #endif                        => r_return_address
-        push r_return_address
-        jumpI -> if
-else:   i2i r_a1                            => r_a3
-        sub r_a2, r_a1                      => r_a1
-        i2i r_a3                            => r_a2
+        push r_return_address                                   // push return address on the  stack
+        jumpI -> gcd                                            // recursively call gcd
+else:   i2i r_a1                            => r_a3             // a3 = a1
+        sub r_a2, r_a1                      => r_a1             // a1 = a2 - a1
+        i2i r_a3                            => r_a2             // a2 = a3
         loadI #endif                        => r_return_address
-        push r_return_address
-        jumpI -> if
-endif:  addI r_count, 1                     => r_count
-        pop => r_return_address
-        jump -> r_return_address
-end:    out "Greatest Common Divisor: ", r_ans
-        out "Call count: " ,r_count
+        push r_return_address                                   // push return address on the stack
+        jumpI -> gcd                                            // recursively call gcd
+endif:  addI r_count, 1                     => r_count          // counter = counter + 1
+        pop => r_ans                                            // pop the return value
+        pop => r_return_address                                 // pop the return address
+        push r_ans                                              // push the return value back onto the stack
+        jump -> r_return_address                                // return the return address
+end:    out "Greatest Common Divisor: ", r_ans                  // print answer
+        out "Call count: " ,r_count                             // print call count

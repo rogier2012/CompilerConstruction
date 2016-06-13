@@ -20,20 +20,28 @@ import static org.junit.Assert.assertArrayEquals;
 public class GcdTest {
     public static final String GCD_FILE = "src/pp/s1542664/q2_5/gcd.iloc";
 
+    /*
+     * This JUnit methods tests a lot of different cases of gcd calculations and compares the given GCD.java vs the gcd.iloc output.
+     */
     @Test
     public void testGcd(){
-        assertArrayEquals(GCDJava(99,97), GCDIloc(GCD_FILE,"99\n97"));
-        assertArrayEquals(GCDJava(9872,3242), GCDIloc(GCD_FILE,"9872\n3242"));
-        assertArrayEquals(GCDJava(4,2), GCDIloc(GCD_FILE,"4\n2"));
-        assertArrayEquals(GCDJava(1337,42), GCDIloc(GCD_FILE,"1337\n42"));
-        assertArrayEquals(GCDJava(42,56), GCDIloc(GCD_FILE,"42\n56"));
-        assertArrayEquals(GCDJava(345,135), GCDIloc(GCD_FILE,"345\n135"));
+        assertArrayEquals(GCDJava(99,97), GCDIloc("99\n97"));
+        assertArrayEquals(GCDJava(9872,3242), GCDIloc("9872\n3242"));
+        assertArrayEquals(GCDJava(4,2), GCDIloc("4\n2"));
+        assertArrayEquals(GCDJava(1337,42), GCDIloc("1337\n42"));
+        assertArrayEquals(GCDJava(42,56), GCDIloc("42\n56"));
+        assertArrayEquals(GCDJava(345,135), GCDIloc("345\n135"));
     }
 
-    public static int[] GCDIloc(String filename, String numbers){
+
+    /*
+     *  This method returns an array of size 2 with the gcd and the call count as calculated via the ILOC Simulator and the gcd.iloc program.
+     *  It sets an self made input and outputstream into the Simulator and retreives the proper values.
+     */
+    public static int[] GCDIloc( String numbers){
         int[] result = new int[2];
         try {
-            Program prog = Assembler.instance().assemble(new File(filename));
+            Program prog = Assembler.instance().assemble(new File(GCD_FILE));
             Simulator simulator = new Simulator(prog);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -55,6 +63,9 @@ public class GcdTest {
     }
 
 
+    /*
+     * This method returns an array of size 2 with the gcd and the call count as calculated by the provided GCD.java
+     */
     public static int[] GCDJava(int a1, int a2){
         GCD.count = 0;
         int[] result = new int[2];
