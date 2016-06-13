@@ -17,17 +17,17 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * Created by Rogier on 13-06-16 in Enschede.
  */
-public class GcdTeset {
+public class GcdTest {
     public static final String GCD_FILE = "src/pp/s1542664/q2_5/gcd.iloc";
 
     @Test
     public void testGcd(){
         assertArrayEquals(GCDJava(99,97), GCDIloc(GCD_FILE,"99\n97"));
         assertArrayEquals(GCDJava(9872,3242), GCDIloc(GCD_FILE,"9872\n3242"));
-        assertArrayEquals(GCDJava(99,97), GCDIloc(GCD_FILE,"99\n97"));
-        assertArrayEquals(GCDJava(99,97), GCDIloc(GCD_FILE,"99\n97"));
-        assertArrayEquals(GCDJava(99,97), GCDIloc(GCD_FILE,"99\n97"));
-        assertArrayEquals(GCDJava(99,97), GCDIloc(GCD_FILE,"99\n97"));
+        assertArrayEquals(GCDJava(4,2), GCDIloc(GCD_FILE,"4\n2"));
+        assertArrayEquals(GCDJava(1337,42), GCDIloc(GCD_FILE,"1337\n42"));
+        assertArrayEquals(GCDJava(42,56), GCDIloc(GCD_FILE,"42\n56"));
+        assertArrayEquals(GCDJava(345,135), GCDIloc(GCD_FILE,"345\n135"));
     }
 
     public static int[] GCDIloc(String filename, String numbers){

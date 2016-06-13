@@ -15,7 +15,7 @@ import java.util.Map;
 public class ILOC2DDG {
 	/** The singleton instance of this class. */
 	private static final ILOC2DDG instance = new ILOC2DDG();
-    private Map<Instr,Node> instrNodeMap;
+    private Map<Integer,Node> instrNodeMap;
 
 	/** Returns the singleton instance of this class. */
 	public static ILOC2DDG instance() {
@@ -50,15 +50,12 @@ public class ILOC2DDG {
 
         List<Instr> instrList = prog.getInstr();
         for (int i = 0; i < instrList.size(); i++) {
-            Instr instruction = instrList.get(i);
-            Node node = graph.addNode(((Op)instruction).getOpCode().name());
-            instrNodeMap.put(instruction, node);
-            if (instruction instanceof Op){
-                Op operation = (Op) instruction;
+            for (Op operation : instrList.get(i)){
+                Node node = graph.addNode(operation.getLine() + "_" +operation.getOpCode().name());
+                instrNodeMap.put(operation.getLine(), node);
 
                 if (this.loadOperation(operation) || this.popOperation(operation)){
                     graph = this.connectStorePush(graph, instrList.subList(0,i), node);
-
                 }
 
                 List<Operand> operands = operation.getArgs();
@@ -68,16 +65,13 @@ public class ILOC2DDG {
                         graph = this.connectDependency(graph,instrList.subList(0,i),node,operands.get(j));
                     }
                 }
-
             }
-
         }
         Node endNode = graph.addNode("END");
         for (int i = instrList.size()-1; i >= 0; i--){
-            if (instrList.get(i) instanceof Op){
-                Op operation = (Op) instrList.get(i);
+            for (Op operation : instrList.get(i)){
                 if (storeOperation(operation) || pushOperation(operation)){
-                    endNode.addEdge(getInstrNode(instrList.get(i)));
+                    endNode.addEdge(getInstrNode(operation));
                 }
             }
         }
@@ -88,16 +82,15 @@ public class ILOC2DDG {
 
 
     public Graph connectDependency(Graph graph, List<Instr> previousInstr, Node currentNode, Operand oper){
+        connect:
         for (int i = previousInstr.size() - 1; i >= 0; i--){
-
-            if (previousInstr.get(i) instanceof Op){
-                Op operation = (Op)previousInstr.get(i);
+            for (Op operation : previousInstr.get(i)){
                 int target = operation.getOpCode().getTargetCount();
                 if (target == 1){
                     Operand operand = operation.getArgs().get(operation.getArgs().size()-1);
                     if (operand.equals(oper)){
-                        currentNode.addEdge(this.getInstrNode(previousInstr.get(i)));
-                        break;
+                        currentNode.addEdge(this.getInstrNode(operation));
+                        break connect;
                     }
                 }
             }
@@ -107,11 +100,10 @@ public class ILOC2DDG {
 
 
     public Graph connectStorePush(Graph graph,List<Instr> previousInstr, Node currentNode){
-        for (Instr instr:
-             previousInstr) {
-            if (instr instanceof Op){
-                if (this.storeOperation((Op)instr) || this.pushOperation((Op)instr)){
-                    currentNode.addEdge(getInstrNode(instr));
+        for (Instr instr: previousInstr) {
+            for (Op operation : instr) {
+                if (this.storeOperation(operation) || this.pushOperation(operation)){
+                    currentNode.addEdge(getInstrNode(operation));
                 }
             }
         }
@@ -147,8 +139,8 @@ public class ILOC2DDG {
         return operation.getOpCode() == OpCode.pop || operation.getOpCode() == OpCode.cpop;
     }
 
-    public Node getInstrNode(Instr instruction){
-        return instrNodeMap.get(instruction);
+    public Node getInstrNode(Op operation){
+        return instrNodeMap.get(operation.getLine());
     }
 
 
