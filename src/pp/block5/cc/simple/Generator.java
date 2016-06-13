@@ -184,7 +184,6 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
             label = labels.get(ctx);
         }
         labels.put(ctx.expr(), label);
-        ifcount++;
         int statCount = ctx.stat().size();
         Label label1 = createLabel(ctx,"then");
         labels.put(ctx.stat(0),label1);

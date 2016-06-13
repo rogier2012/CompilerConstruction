@@ -1,0 +1,5 @@
+loadI  1 => r_1
+add    r_1,r_2 => r_1
+mult   r_2,r_3 => r_1
+push   r_1
+

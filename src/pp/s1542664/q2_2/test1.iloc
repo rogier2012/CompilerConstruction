@@ -1,0 +1,6 @@
+storeAI r_1 => r_arp,4
+loadI   8 => r_1
+loadAO  r_arp,r_1 => r_2
+add     r_2,r_3 => r_3
+storeAI r_3 => r_arp,4
+

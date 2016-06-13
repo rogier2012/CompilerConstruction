@@ -340,7 +340,8 @@ public class Simulator {
 
 	/** Pops a 4-byte integer from the stack. */
 	private int pop() {
-		int sp = this.vm.getReg(Machine.SP);
+        System.out.println(this.vm.toString());
+        int sp = this.vm.getReg(Machine.SP);
 		int result = this.vm.load(sp);
 		this.vm.setReg(Machine.SP, sp + 4);
 		return result;

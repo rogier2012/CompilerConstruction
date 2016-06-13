@@ -1,0 +1,10 @@
+      loadAI r_arp,@a => r_a
+      loadAI r_arp,@i => r_i
+test: cmp_LE r_i, r_3 => r_5
+      cbr r_5 -> end, body
+body: mult r_2, r_3 => r_4
+      add r_a, r_4 => r_a
+      loadI 1 => r_6
+      sub r_i,r_6 => r_i
+      jumpI -> test
+end:  storeAI r_a => r_arp,@a

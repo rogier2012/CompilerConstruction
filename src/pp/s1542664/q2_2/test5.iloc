@@ -1,0 +1,7 @@
+      cmp_GT r_a,r_b => r_0
+      cbr r_0 -> then, else
+then: i2i r_1 => r_i
+      jumpI -> end
+else: i2i r_b => r_i
+      i2i r_a => r_b
+end:  storeAI r_i => r_arp,@i

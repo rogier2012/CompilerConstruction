@@ -1,0 +1,6 @@
+loadI  1 => r_1
+pop    => r_2
+add    r_1,r_2 => r_3
+sub    r_2,r_3 => r_3
+store  r_3 => r_arp
+add    r_2,r_3 => r_2
