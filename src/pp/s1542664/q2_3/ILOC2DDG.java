@@ -51,15 +51,14 @@ public class ILOC2DDG {
         List<Instr> instrList = prog.getInstr();
         for (int i = 0; i < instrList.size(); i++) {
             Instr instruction = instrList.get(i);
-            Node node = graph.addNode(String.valueOf(instruction.getLine()));
+            Node node = graph.addNode(((Op)instruction).getOpCode().name());
             instrNodeMap.put(instruction, node);
             if (instruction instanceof Op){
                 Op operation = (Op) instruction;
-                if (this.loadOperation(operation)){
-                    graph = this.connectStore(graph, instrList.subList(0,i), node);
 
-                } else if (this.popOperation(operation)){
-                    graph = this.connectPush(graph, instrList.subList(0,i), node);
+                if (this.loadOperation(operation) || this.popOperation(operation)){
+                    graph = this.connectStorePush(graph, instrList.subList(0,i), node);
+
                 }
 
                 List<Operand> operands = operation.getArgs();
@@ -107,11 +106,11 @@ public class ILOC2DDG {
     }
 
 
-    public Graph connectStore(Graph graph,List<Instr> previousInstr, Node currentNode){
+    public Graph connectStorePush(Graph graph,List<Instr> previousInstr, Node currentNode){
         for (Instr instr:
              previousInstr) {
             if (instr instanceof Op){
-                if (this.storeOperation((Op)instr)){
+                if (this.storeOperation((Op)instr) || this.pushOperation((Op)instr)){
                     currentNode.addEdge(getInstrNode(instr));
                 }
             }
@@ -119,17 +118,6 @@ public class ILOC2DDG {
         return graph;
     }
 
-    public Graph connectPush(Graph graph,List<Instr> previousInstr, Node currentNode){
-        for (Instr instr:
-                previousInstr) {
-            if (instr instanceof Op){
-                if (this.pushOperation((Op)instr)){
-                    currentNode.addEdge(getInstrNode(instr));
-                }
-            }
-        }
-        return graph;
-    }
 
     public boolean pushOperation(Op operation){
         return operation.getOpCode() == OpCode.push || operation.getOpCode() == OpCode.cpush;
